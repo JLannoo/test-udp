@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hack Wiz</title>
+</head>
+<body>
+    <form>
+        <input type="color" id="color">
+        <input type="number" id="dimming" min="0" max="100" value="100" step="10">
+
+        <button type="button" id="set">Set</button>
+    </form>
+
+    <script>
+        const color = document.getElementById('color');
+        const dimming = document.getElementById('dimming');
+        const set = document.getElementById('set');
+
+        function sendData(){
+            const rgb = color.value.match(/\w\w/g).map(x => parseInt(x, 16));
+            const rgbObject = {
+                r: rgb[0],
+                g: rgb[1],
+                b: rgb[2],
+            };
+            
+            fetch('/light', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    color: rgbObject,
+                    dimming: +dimming.value
+                })
+            });
+        }
+
+        color.addEventListener('change', sendData);
+        dimming.addEventListener('change', sendData);
+    </script>
+</body>
+</html>
